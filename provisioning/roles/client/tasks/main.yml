@@ -120,8 +120,8 @@
     ignore_errors: True
 
 - name: Kill VNC server process 
-    become: true
-    shell: vncserver -kill :1
+  become: true
+  shell: vncserver -kill :1
 
 - name: Overwrite a file .vnc
   copy:
