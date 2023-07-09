@@ -110,6 +110,11 @@
       - tigervnc-xorg-extension
     state: present
 
+- name: Create .vnc directory
+  file:
+    path: ~/.vnc
+    state: directory
+
 - name: Run vncserver and configure password
   expect:
     command: vncserver
@@ -117,7 +122,6 @@
       'Password:': password
       'Verify:': password
       'Would you like to enter a view-only password (y/n)?': n
-    ignore_errors: True
 
 - name: Kill VNC server process 
   become: true
