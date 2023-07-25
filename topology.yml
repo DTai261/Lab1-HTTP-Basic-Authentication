@@ -12,12 +12,6 @@ hosts:
       image: ubuntu-focal-x86_64
       man_user: ubuntu
     flavor: standard.small
-  
-  - name: client2
-    base_box:
-      image: ubuntu-focal-x86_64
-      man_user: ubuntu
-    flavor: standard.small
 
 routers:
   - name: router
@@ -41,9 +35,6 @@ net_mappings:
     - host: client
       network: client-switch
       ip: 192.168.30.5
-    - host: client2
-      network: client-switch
-      ip: 192.168.30.3
 
 router_mappings:
     - router: router
