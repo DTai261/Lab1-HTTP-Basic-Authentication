@@ -44,6 +44,9 @@
     line: '192.168.30.3 client2'
 
 #####
+- name: Switch to user alice
+  become_user: alice
+  
 - name: Start Apache service
   service:
     name: apache2
@@ -86,12 +89,18 @@
 #       "New password:": "Password123"
 #       "Re-type new password:": "Password123"
 
+- name: Switch to user alice
+  become_user: root
+  
 - name: Specify username and password of user2
   expect:
     command: htpasswd -c /etc/apache2/.htaccess_super_secret user2
     responses:
       "New password:": "{{ flag_1 }}"
       "Re-type new password:": "{{ flag_1 }}"
+
+- name: Switch to user alice
+  become_user: alice
 
 - name: Restart Apache service
   service:
