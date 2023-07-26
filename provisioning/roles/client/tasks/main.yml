@@ -6,19 +6,6 @@
     path: '/etc/hosts'
     line: '192.168.20.5 server'
 
-- name: Create alias for client 2
-  lineinfile:
-    path: '/etc/hosts'
-    line: '192.168.30.3 client2'
-
-# - name: Install packages
-#   apt:
-#     pkg:
-#      - nmap
-#      - hydra
-#      - medusa
-#     update_cache: yes
-
 - name: Update apt cache
   apt:
     update_cache: yes
@@ -55,123 +42,124 @@
 #       - lightdm
 #     update_cache: yes
 
-- name: Set debconf value for lightdm
-  debconf:
-    name: lightdm
-    question: lightdm/display-manager
-    value: lightdm
-    vtype: string
-
-- name: Install xfce4 and xfce4-goodies
-  apt:
-    name: 
-      - xfce4
-      - xfce4-goodies
-    update_cache: yes
-
-- name: Reboot the machine
-  reboot:
-    reboot_timeout: 480
-    pre_reboot_delay: 0
-    post_reboot_delay: 30
-  become: true
-  become_method: sudo
-  async: 0
-  poll: 0
-  register: reboot_result
-  ignore_errors: true
-
-- name: Wait for the machine to come back online
-  wait_for_connection:
-    delay: 10
-    timeout: 480
-
+#############################################################
+# - name: Set debconf value for lightdm
+#   debconf:
+#     name: lightdm
+#     question: lightdm/display-manager
+#     value: lightdm
+#     vtype: string
 
 # - name: Install xfce4 and xfce4-goodies
+#   apt:
+#     name: 
+#       - xfce4
+#       - xfce4-goodies
+#     update_cache: yes
+
+# - name: Reboot the machine
+#   reboot:
+#     reboot_timeout: 480
+#     pre_reboot_delay: 0
+#     post_reboot_delay: 30
+#   become: true
+#   become_method: sudo
+#   async: 0
+#   poll: 0
+#   register: reboot_result
+#   ignore_errors: true
+
+# - name: Wait for the machine to come back online
+#   wait_for_connection:
+#     delay: 10
+#     timeout: 480
+
+
+# # - name: Install xfce4 and xfce4-goodies
+# #   become: true
+# #   apt:
+# #     name: "{{ item }}"
+# #     state: present
+# #   with_items:
+# #     - xfce4
+# #     - xfce4-goodies
+
+# # - name: Choose lightdm as the default display manager
+# #   expect:
+# #     command: dpkg-reconfigure lightdm
+# #     responses:
+# #       'Default display manager:': lightdm
+
+# - name: Install tigervnc-standalone-server and tigervnc-xorg-extension
 #   become: true
 #   apt:
-#     name: "{{ item }}"
+#     name: 
+#       - tigervnc-standalone-server
+#       - tigervnc-xorg-extension
 #     state: present
-#   with_items:
-#     - xfce4
-#     - xfce4-goodies
 
-# - name: Choose lightdm as the default display manager
+# - name: Run vncserver and configure password
 #   expect:
-#     command: dpkg-reconfigure lightdm
+#     command: vncserver
 #     responses:
-#       'Default display manager:': lightdm
+#       'Password:': password
+#       'Verify:': password
+#       'Would you like to enter a view-only password (y/n)?': n
+#     ignore_errors: True
 
-- name: Install tigervnc-standalone-server and tigervnc-xorg-extension
-  become: true
-  apt:
-    name: 
-      - tigervnc-standalone-server
-      - tigervnc-xorg-extension
-    state: present
+# - name: Kill VNC server process 
+#     become: true
+#     shell: vncserver -kill :1
 
-- name: Run vncserver and configure password
-  expect:
-    command: vncserver
-    responses:
-      'Password:': password
-      'Verify:': password
-      'Would you like to enter a view-only password (y/n)?': n
-    ignore_errors: True
+# - name: Overwrite a file .vnc
+#   copy:
+#     src: xstartup
+#     dest: ~/.vnc/xstartup
+#     force: yes
 
-- name: Kill VNC server process 
-    become: true
-    shell: vncserver -kill :1
+# - name: Set executable permission for xstartup
+#   file:
+#     path: ~/.vnc/xstartup
+#     mode: '+x'
 
-- name: Overwrite a file .vnc
-  copy:
-    src: xstartup
-    dest: ~/.vnc/xstartup
-    force: yes
+# # - name: Reboot the system
+# #   become: true
+# #   command: reboot
 
-- name: Set executable permission for xstartup
-  file:
-    path: ~/.vnc/xstartup
-    mode: '+x'
+# # - name: reboot client
+# #   ansible.builtin.reboot:
+# #     msg: "reboot by Ansible"
+# #     pre_reboot_delay: 5
+# #     post_reboot_delay: 10
+# #     test_command: "whoami"
 
-# - name: Reboot the system
+# - name: Reboot the machine
+#   reboot:
+#     reboot_timeout: 480
+#     pre_reboot_delay: 0
+#     post_reboot_delay: 30
 #   become: true
-#   command: reboot
+#   become_method: sudo
+#   async: 0
+#   poll: 0
+#   register: reboot_result
+#   ignore_errors: true
 
-# - name: reboot client
-#   ansible.builtin.reboot:
-#     msg: "reboot by Ansible"
-#     pre_reboot_delay: 5
-#     post_reboot_delay: 10
-#     test_command: "whoami"
+# - name: Wait for the machine to come back online
+#   wait_for_connection:
+#     delay: 10
+#     timeout: 480
 
-- name: Reboot the machine
-  reboot:
-    reboot_timeout: 480
-    pre_reboot_delay: 0
-    post_reboot_delay: 30
-  become: true
-  become_method: sudo
-  async: 0
-  poll: 0
-  register: reboot_result
-  ignore_errors: true
+# # - name: Kill VNC server process
+# #   become: true
+# #   shell: pkill Xtightvnc
 
-- name: Wait for the machine to come back online
-  wait_for_connection:
-    delay: 10
-    timeout: 480
+# # - name: Kill VNC server process 2
+# #   become: true
+# #   shell: vncserver -kill :1
 
-# - name: Kill VNC server process
-#   become: true
-#   shell: pkill Xtightvnc
-
-# - name: Kill VNC server process 2
-#   become: true
-#   shell: vncserver -kill :1
-
-- name: Run vncserver again
-  command: vncserver
+# - name: Run vncserver again
+#   command: vncserver
 
 - name: Create script file
   copy:
